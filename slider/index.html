@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="slides">
+            <div class="slide">1</div>
+            <div class="slide">2</div>
+            <div class="slide">3</div>
+        </div>
+        <div class="next">next</div>
+        <div class="prev">prev</div>
+        <div class="nagavition">
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+        </div>
+    </div>
+</body>
+<script>
+    const container = document.querySelector('.container');
+    const slides = document.querySelector('.slides');
+    let slide = document.querySelectorAll('.slide');
+    let dot = document.querySelectorAll('.dot');
+    var index =1;
+    var interval = 3000;
+    const next = document.querySelector('.next');
+    const prev = document.querySelector('.prev');
+    const firstclone = slide[0].cloneNode(true);
+    const lastclone = slide[slide.length - 1].cloneNode(true);
+    firstclone.id = 'firstclone';
+    lastclone.id = 'lastclone';
+    slides.append(firstclone);
+    slides.prepend(lastclone);
+    const slide_width = slide[index].clientWidth;
+    slides.style.transform = `translateX(${-slide_width*index}px)`;
+    const slide_id = ()=> document.querySelectorAll('.slide');
+    const items = Math.floor(slide.length);
+    var clear;
+    const start = ()=>{
+       clear = setInterval(() => {
+            MoveNextSlides();
+        },interval);
+        
+    };
+  
+    const MoveNextSlides = ()=>{
+        if (index >= slide.length -1) return;
+        index++;
+        slides.style.transform = `translateX(${-slide_width*index}px)`;
+        slides.style.transition = `0.5s`;
+    }
+    const MovePrevSlides = ()=>{
+        if (index <= 0) return;
+        index--;
+        slides.style.transform = `translateX(${-slide_width*index}px)`;
+        slides.style.transition = `0.5s`;
+    }
+    slides.addEventListener("transitionend",()=>{
+        slide = slide_id();
+        if (slide[index].id===firstclone.id) {
+            index =1;
+            slides.style.transform = `translateX(${-slide_width*index}px)`;
+            slides.style.transition = `none`;
+        }
+        if (slide[index].id===lastclone.id) {
+            index =slide.length - 2;
+            slides.style.transform = `translateX(${-slide_width*index}px)`;
+            slides.style.transition = `none`;
+        }
+    });
+    container.addEventListener("mouseenter",()=>{
+        clearInterval(clear)
+    });
+    container.addEventListener("mouseleave",start);
+    next.addEventListener("click",MoveNextSlides);
+    prev.addEventListener("click",MovePrevSlides);
+  
+       start();
+
+</script>
+</html>
